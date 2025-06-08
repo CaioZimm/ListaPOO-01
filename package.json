@@ -1,12 +1,19 @@
 {
-  "name": "lista01",
+  "name": "lista-poo-01",
   "version": "1.0.0",
+  "description": "Resoluções da Lista de Exercícios POO 01 em Node.js utilizando JavaScript Orientado a Objetos.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "author": "Caio Claudino Venancio",
+  "license": "MIT",
+  "keywords": [
+    "javascript",
+    "poo",
+    "nodejs",
+    "exercicios",
+    "programacao-orientada-a-objetos"
+  ]
 }
