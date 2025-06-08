@@ -1,6 +1,5 @@
-// index.js
 const readline = require('readline');
-const { spawn } = require('child_process'); // Importa spawn do módulo child_process
+const { spawn } = require('child_process');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -8,72 +7,103 @@ const rl = readline.createInterface({
 });
 
 function exibirMenu() {
-    console.log("\n--- Lista de Exercícios POO em Node.js ---");
-    console.log("--- Lista 01 ---");
+    console.clear();
+    console.log("\n=== Lista de Exercícios POO - 01 em Node.js ===\n");
     console.log("1. Calculadora Simples");
-    console.log("2. Verificador de Palíndromos");
-    console.log("3. Fatorial (Recursivo)");
+    console.log("2. Verificador de Palíndromo");
+    console.log("3. Fatorial");
     console.log("4. Conversor de Temperaturas");
     console.log("5. Maior e Menor Elemento em uma Matriz");
     console.log("6. Soma das Diagonais de uma Matriz Quadrada");
     console.log("7. Manipulando Dados de um Objeto");
-    console.log("8. Trocando Valores entre Objetos (Simulado)");
+    console.log("8. Trocando Valores entre Objetos");
     console.log("9. Sistema de Gerenciamento de Funcionários");
     console.log("10. Agenda de Contatos");
+
     console.log("0. Sair");
-    console.log("------------------------------------------");
+    console.log("==============================================\n");
 }
 
-async function perguntar(query) {
-    return new Promise(resolve => rl.question(query, resolve));
+function perguntar(pergunta) {
+    return new Promise(resolve => rl.question(pergunta, resolve));
+}
+
+function getCaminhoExercicio(numero) {
+    switch (numero) {
+        case 1:
+            return 'src/Funcoes/Calculadora/execCalc.js';
+        case 2:
+            return 'src/Funcoes/Palindromo/execPalindromo.js';
+        case 3:
+            return 'src/Funcoes/Fatorial/execFatorial.js';
+        case 4:
+            return 'src/Funcoes/ConversorTemperatura/execConversor.js';
+        case 5:
+            return 'src/Arrays/MaiorMenor/execMatriz.js';
+        case 6:
+            return 'src/Arrays/SomaDiagonais/execSoma.js';
+        case 7:
+            return 'src/Ponteiros/ManipulacaoDados/execNumero.js';
+        case 8:
+            return 'src/Ponteiros/TrocaValor/execValor.js';
+        case 9:
+            return 'src/Structs/GerenciarFunc/execGerenciamento.js';
+        case 10:
+            return 'src/Structs/AgendaContato/execAgenda.js';
+        default:
+            return null;
+    }
 }
 
 async function executarExercicio(numeroExercicio) {
-    const filePath = `./exec/runExercicio${numeroExercicio}.js`;
+    rl.pause();
+    const filePath = getCaminhoExercicio(numeroExercicio);
 
     return new Promise((resolve, reject) => {
-        // Usa spawn para executar o arquivo JS como um novo processo Node
         const child = spawn('node', [filePath], { stdio: 'inherit' });
 
         child.on('close', (code) => {
+            rl.resume();
             if (code !== 0) {
-                console.error(`O exercício ${numeroExercicio} foi encerrado com código de saída ${code}`);
-                reject(new Error(`Exercício ${numeroExercicio} falhou.`));
+                console.error('Error');
+                reject();
             } else {
                 resolve();
             }
         });
 
         child.on('error', (err) => {
-            console.error(`Erro ao executar o exercício ${numeroExercicio}: ${err.message}`);
+            console.error("Error", err.message);
+            rl.resume();
             reject(err);
         });
     });
 }
 
-
 async function main() {
     let rodando = true;
+
     while (rodando) {
         exibirMenu();
-        const escolha = await perguntar("Digite o número do exercício que deseja executar: ");
+        const op = await perguntar("Digite o número do exercício que deseja executar: ");
 
-        if (escolha === '0') {
-            console.log("Saindo do programa. Até mais!");
+        if (op === '0') {
+            console.log("\nEncerrando o programa...");
             rodando = false;
-        } else if (parseInt(escolha) >= 1 && parseInt(escolha) <= 20) {
+
+        } else if (!isNaN(op) && parseInt(op) >= 1 && parseInt(op) <= 10) {
             try {
-                await executarExercicio(parseInt(escolha));
-            } catch (error) {
-                // Erro já tratado dentro de executarExercicio
-            }
+                await executarExercicio(parseInt(op));
+            } catch (error) {}
         } else {
-            console.log("Opção inválida. Por favor, digite um número de 0 a 20.");
+            console.log("Opção inválida. Por favor, digite um número entre 0 e 10.");
         }
-        // Uma pequena pausa para o usuário ver a saída antes do menu reaparecer
-        await perguntar("\nPressione Enter para continuar...");
+
+        if (rodando) 
+            await perguntar("\nPressione Enter para voltar ao menu...");
     }
-    rl.close(); // Fecha a interface de leitura
+
+    rl.close();
 }
 
-main(); // Inicia o programa
+main();
